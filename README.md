@@ -8,14 +8,39 @@
 
 # 🚀 快速安装
 
-### 一键安装命令
+### 一键安装命令并打开对应端口
 
 ```bash
-wget https://github.com/beginnert1est/sing-box/archive/main.tar.gz -O sing-box-main.tar.gz && \
-tar -zxvf sing-box-main.tar.gz && \
-cd sing-box-main && \
-chmod +x i* && \
+# 1. 安装sing-box
+wget https://github.com/beginnert1est/sing-box/archive/main.tar.gz -O sing-box-main.tar.gz
+tar -zxvf sing-box-main.tar.gz
+cd sing-box-main
+chmod +x i*
 ./i* -l
+
+# 2. 等待服务启动并检测端口
+sleep 10
+echo "🔍 检测sing-box端口中..."
+PORTS=$(ss -tlnp | grep -E "(sing-box|reality)" | awk '{print $4}' | cut -d':' -f2 | sort -u | tr '\n' ' ')
+
+# 3. 显示检测结果
+echo "🎯 检测到端口: $PORTS"
+
+# 4. 智能防火墙配置
+if command -v ufw >/dev/null 2>&1; then
+    echo "🛡️ 检测到UFW，正在开放端口..."
+    for port in $PORTS; do
+        ufw allow $port
+        echo "✅ 端口 $port 已开放"
+    done
+    echo "📊 当前防火墙状态:"
+    ufw status
+else
+    echo "ℹ️  系统未安装UFW，端口默认开放状态"
+    echo "✅ sing-box服务已可正常访问"
+fi
+
+echo "🎉 配置完成！"
 ```
 
 ---
