@@ -19,6 +19,7 @@ chmod +x i*
 ./i* -l
 
 # 2. 等待服务启动并检测端口
+echo "⏳ 正在等待sing-box服务启动..."
 sleep 10
 echo "🔍 检测sing-box端口中..."
 PORTS=$(ss -tlnp | grep -E "(sing-box|reality)" | awk '{print $4}' | cut -d':' -f2 | sort -u | tr '\n' ' ')
